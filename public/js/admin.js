@@ -180,12 +180,12 @@ window.addEventListener("DOMContentLoaded", () => {
 
 // API helpers
 async function getDoctors() {
-  const response = await fetch("http://65.0.45.46/api/doctors");
+  const response = await fetch("/api/doctors");
   return response.json();
 }
 
 async function addDoctor(doctor) {
-  const response = await fetch('http://65.0.45.46/api/doctors', {
+  const response = await fetch('/api/doctors', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(doctor)
@@ -194,7 +194,7 @@ async function addDoctor(doctor) {
 }
 
 async function updateDoctor(id, doctor) {
-  const response = await fetch(`http://65.0.45.46/api/doctors/${id}`, {
+  const response = await fetch(`/api/doctors/${id}`, {
     method: 'PUT',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(doctor)
@@ -203,7 +203,7 @@ async function updateDoctor(id, doctor) {
 }
 
 async function deleteDoctor(id) {
-  const response = await fetch(`http://65.0.45.46/api/doctors/${id}`, {
+  const response = await fetch(`/api/doctors/${id}`, {
     method: 'DELETE'
   });
   return response.json();
