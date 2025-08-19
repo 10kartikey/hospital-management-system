@@ -412,4 +412,21 @@ router.post('/book-appointment', authenticatePatient, async (req, res) => {
   }
 });
 
+/**
+ * GET /api/patients/all
+ * Get all patients for admin dashboard (admin only)
+ */
+router.get('/all', async (req, res) => {
+  try {
+    const patients = await Patient.find({})
+      .select('-password') // Exclude password field
+      .sort({ createdAt: -1 }); // Sort by newest first
+    
+    res.json(patients);
+  } catch (err) {
+    console.error('Error fetching all patients:', err);
+    res.status(500).json({ error: 'Could not fetch patients' });
+  }
+});
+
 module.exports = router;

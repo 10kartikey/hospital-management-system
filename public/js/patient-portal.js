@@ -161,8 +161,8 @@ logoutBtn.addEventListener('click', () => {
   clearLoginForm();
   clearRegistrationForm();
   
-  showAuth();
-  showAlert('Logged out successfully', 'info');
+  // Redirect to home page
+  window.location.href = '/index.html';
 });
 
 // Toggle between login and register forms
