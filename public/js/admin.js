@@ -450,7 +450,7 @@ function updateAppointmentsTable() {
       <td>${apt.time}</td>
       <td><span class="status-badge status-${apt.status}">${apt.status}</span></td>
       <td>
-        <button class="btn btn-action btn-sm btn-primary" onclick="updateAppointmentStatus('${apt._id}', 'confirmed')">Confirm</button>
+        <button class="btn btn-action btn-sm btn-primary" onclick="updateAppointmentStatus('${apt._id}', 'scheduled')">Schedule</button>
         <button class="btn btn-action btn-sm btn-success" onclick="updateAppointmentStatus('${apt._id}', 'completed')">Complete</button>
         <button class="btn btn-action btn-sm btn-danger" onclick="updateAppointmentStatus('${apt._id}', 'cancelled')">Cancel</button>
       </td>
@@ -500,10 +500,6 @@ function updatePatientsTable() {
         <td>${patient.contact}</td>
         <td>${joinDate}</td>
         <td>${appointmentCount}</td>
-        <td>
-          <button class="btn btn-action btn-sm btn-info" onclick="viewPatientDetails('${patient._id}')">View</button>
-          <button class="btn btn-action btn-sm btn-warning" onclick="editPatient('${patient._id}')">Edit</button>
-        </td>
       </tr>
     `;
   }).join('');
@@ -532,9 +528,9 @@ async function updateAppointmentStatus(appointmentId, status) {
 function generateTimeSlots() {
   const dropdown = document.getElementById("timeSlotDropdown");
   if (!dropdown) return;
-  
+
   dropdown.innerHTML = "";
-  for (let h = 8; h < 18; h++) { // 8 AM to 6 PM
+  for (let h = 0; h < 24; h++) {
     for (let m = 0; m < 60; m += 30) {
       const time = `${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}`;
       const li = document.createElement("li");

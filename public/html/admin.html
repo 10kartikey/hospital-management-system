@@ -175,9 +175,6 @@
             <a class="nav-link" href="#" data-section="analytics">
               <i class="fas fa-chart-line"></i> Analytics
             </a>
-            <a class="nav-link" href="#" data-section="settings">
-              <i class="fas fa-cog"></i> Settings
-            </a>
           </div>
         </nav>
       </div>
@@ -354,7 +351,6 @@
                       <th>Contact</th>
                       <th>Joined</th>
                       <th>Appointments</th>
-                      <th>Actions</th>
                     </tr>
                   </thead>
                   <tbody id="patientsTableBody">
@@ -399,88 +395,6 @@
               </div>
             </div>
           </div>
-
-          <!-- Settings Section -->
-          <div id="settings-section" class="content-section">
-            <h2 class="mb-4">System Settings</h2>
-            
-            <div class="row">
-              <div class="col-md-6">
-                <div class="chart-container">
-                  <h5>Hospital Information</h5>
-                  <form id="hospitalInfoForm">
-                    <div class="mb-3">
-                      <label class="form-label">Hospital Name</label>
-                      <input type="text" class="form-control" value="HealthCare Plus">
-                    </div>
-                    <div class="mb-3">
-                      <label class="form-label">Address</label>
-                      <textarea class="form-control" rows="3">123 Medical Center Dr, Healthcare City, HC 12345</textarea>
-                    </div>
-                    <div class="mb-3">
-                      <label class="form-label">Contact Number</label>
-                      <input type="tel" class="form-control" value="+1 (555) 123-4567">
-                    </div>
-                    <div class="mb-3">
-                      <label class="form-label">Email</label>
-                      <input type="email" class="form-control" value="info@healthcareplus.com">
-                    </div>
-                    <button type="submit" class="btn btn-primary">Update Information</button>
-                  </form>
-                </div>
-              </div>
-              
-              <div class="col-md-6">
-                <div class="chart-container">
-                  <h5>System Configuration</h5>
-                  <form id="systemConfigForm">
-                    <div class="mb-3">
-                      <label class="form-label">Appointment Duration (minutes)</label>
-                      <select class="form-select">
-                        <option value="15">15 minutes</option>
-                        <option value="30" selected>30 minutes</option>
-                        <option value="45">45 minutes</option>
-                        <option value="60">60 minutes</option>
-                      </select>
-                    </div>
-                    <div class="mb-3">
-                      <label class="form-label">Working Hours</label>
-                      <div class="row">
-                        <div class="col">
-                          <input type="time" class="form-control" value="09:00" placeholder="Start Time">
-                        </div>
-                        <div class="col">
-                          <input type="time" class="form-control" value="17:00" placeholder="End Time">
-                        </div>
-                      </div>
-                    </div>
-                    <div class="mb-3">
-                      <div class="form-check">
-                        <input class="form-check-input" type="checkbox" id="emailNotifications" checked>
-                        <label class="form-check-label" for="emailNotifications">
-                          Enable Email Notifications
-                        </label>
-                      </div>
-                    </div>
-                    <div class="mb-3">
-                      <div class="form-check">
-                        <input class="form-check-input" type="checkbox" id="autoConfirm">
-                        <label class="form-check-label" for="autoConfirm">
-                          Auto-confirm Appointments
-                        </label>
-                      </div>
-                    </div>
-                    <button type="submit" class="btn btn-primary">Save Configuration</button>
-                  </form>
-                </div>
-              </div>
-            </div>
-          </div>
-
-        </div>
-      </div>
-    </div>
-  </div>
 
   <!-- Add Doctor Modal -->
   <div class="modal fade" id="addDoctorModal" tabindex="-1">
