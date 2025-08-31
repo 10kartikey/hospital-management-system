@@ -19,9 +19,10 @@ app.use(bodyParser.json());
 
 // Session configuration for admin authentication
 app.use(session({
-  secret: process.env.SESSION_SECRET,
-  resave: false,
-  saveUninitialized: false,
+  secret: process.env.SESSION_SECRET || "mydefaultsecret",  // fallback secret
+    resave: false,
+    saveUninitialized: true,
+    cookie: { secure: false }  
 }));
 
 // Database Connection
