@@ -1,82 +1,28 @@
 version: '3.8'
 
 services:
-  # Hospital Management Application
   hospital-app:
     build:
       context: .
-      dockerfile: Dockerfile
-      target: production
+      dockerfile: Dockerfile.minimal
     ports:
       - "5000:5000"
     environment:
-      - NODE_ENV=development
       - MONGO_URI=mongodb://mongodb:27017/hospital_management
-      - SESSION_SECRET=yourSuperSecretSessionKey
-      - JWT_SECRET=yourSuperSecretJWTKey123456789
+      - SESSION_SECRET=hospital-secret-2024
+      - JWT_SECRET=jwt-secret-2024
       - ADMIN_USERNAME=admin
-      - ADMIN_PASSWORD=10@AdminPW
+      - ADMIN_PASSWORD=admin123
       - PORT=5000
     depends_on:
       - mongodb
-    networks:
-      - hospital-network
-    restart: unless-stopped
-    volumes:
-      - ./backend:/app/backend:ro
-      - ./public:/app/public:ro
-    healthcheck:
-      test: ["CMD", "node", "-e", "require('http').get('http://localhost:5000/health', (res) => { process.exit(res.statusCode === 200 ? 0 : 1) }).on('error', () => { process.exit(1) })"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 40s
 
-  # MongoDB Database
   mongodb:
     image: mongo:7
     ports:
       - "27017:27017"
-    environment:
-      - MONGO_INITDB_DATABASE=hospital_management
     volumes:
       - mongodb_data:/data/db
-      - ./mongo-init:/docker-entrypoint-initdb.d:ro
-    networks:
-      - hospital-network
-    restart: unless-stopped
-    healthcheck:
-      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 40s
 
-  # MongoDB Admin Interface (optional)
-  mongo-express:
-    image: mongo-express:1
-    ports:
-      - "8081:8081"
-    environment:
-      - ME_CONFIG_MONGODB_SERVER=mongodb
-      - ME_CONFIG_MONGODB_PORT=27017
-      - ME_CONFIG_MONGODB_ENABLE_ADMIN=true
-      - ME_CONFIG_BASICAUTH_USERNAME=admin
-      - ME_CONFIG_BASICAUTH_PASSWORD=admin123
-    depends_on:
-      - mongodb
-    networks:
-      - hospital-network
-    restart: unless-stopped
-    profiles:
-      - admin
-
-# Named volumes for data persistence
 volumes:
   mongodb_data:
-    driver: local
-
-# Custom network for service communication
-networks:
-  hospital-network:
-    driver: bridge
