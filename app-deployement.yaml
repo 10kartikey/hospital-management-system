@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hospital-app
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: hospital-app
+  template:
+    metadata:
+      labels:
+        app: hospital-app
+    spec:
+      containers:
+      - name: hospital-app
+        image: 10kartikey/hospital-management-system-hospital-app:latest
+        ports:
+        - containerPort: 5000
+        env:
+        - name: MONGO_URI
+          value: "mongodb://mongodb-service:27017/hospital_management"
+        - name: PORT
+          value: "5000"
+        - name: NODE_ENV
+          value: "production"
+        - name: SESSION_SECRET
+          value: "hospital-secret-2024"
+        - name: JWT_SECRET
+          value: "jwt-secret-2024"
+        - name: ADMIN_USERNAME
+          value: "admin"
+        - name: ADMIN_PASSWORD
+          value: "admin123"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: hospital-service
+spec:
+  selector:
+    app: hospital-app
+  ports:
+  - port: 80
+    targetPort: 5000
+  type: LoadBalancer
