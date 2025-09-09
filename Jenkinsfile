@@ -11,6 +11,9 @@ pipeline {
         EKS_CLUSTER_NAME = "kartikey-test-cluster"
         AWS_REGION = "ap-south-1"
     }
+    triggers {
+        githubPush()   // 🔑 this listens to GitHub webhook
+    }
     stages {
         stage('Checkout') {
             steps {
