@@ -1,7 +1,3 @@
-my new script
-
-
-
 pipeline {
     agent any
     environment {
