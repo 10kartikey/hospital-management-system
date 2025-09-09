@@ -670,10 +670,17 @@ async function addDoctor(doctor) {
   const response = await fetch('/api/doctors', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(doctor)
+    body: JSON.stringify(doctor),
+    credentials: 'include'   // ✅ ensures connect.sid cookie is sent
   });
+
+  if (!response.ok) {
+    throw new Error(`Failed to add doctor: ${response.status}`);
+  }
+
   return response.json();
 }
+
 
 async function updateDoctor(id, doctor) {
   const response = await fetch(`/api/doctors/${id}`, {
