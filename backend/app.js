@@ -6,6 +6,14 @@ const path = require("path");
 const session = require('express-session');
 const mongoose = require('mongoose');
 
+// Conditionally import MongoStore for production session persistence
+let MongoStore = null;
+try {
+  MongoStore = require('connect-mongo');
+} catch (error) {
+  console.warn('connect-mongo not available - sessions will use memory store');
+}
+
 // Load environment variables
 require('dotenv').config();
 
@@ -14,20 +22,46 @@ const app = express();
 
 // Middleware setup
 app.use(express.static(path.join(__dirname, '../public')));
-app.use(cors());
+
+// CORS configuration - MUST be before routes
+app.use(cors({
+  origin: ["http://ad38854d1c26d43879026ec8f54509e5-1765280511.ap-south-1.elb.amazonaws.com", "http://localhost:3000", "http://localhost:5000"],  
+  credentials: true,                       // ✅ allow cookies
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  optionsSuccessStatus: 200
+}));
+
 app.use(bodyParser.json());
 
 // Session configuration for admin authentication
-app.use(session({
-  secret: process.env.SESSION_SECRET ,  // fallback secret
-    resave: false,
-    saveUninitialized: true,
-    cookie: {
+const sessionConfig = {
+  secret: process.env.SESSION_SECRET || 'hospital-secret-2024',  
+  resave: false,
+  saveUninitialized: false,  // Changed to false for better security
+  name: 'hospital.sid',  // Custom session name
+  cookie: {
     httpOnly: true,
-    secure: false,   // true only if HTTPS
-    sameSite: "lax"  // or "none" if frontend & backend are on different domains with HTTPS
-  } 
-}));
+    secure: process.env.NODE_ENV === 'production',  // Dynamic based on environment
+    sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',  // 'none' for cross-origin in prod
+    maxAge: 24 * 60 * 60 * 1000,  // 24 hours
+    domain: process.env.NODE_ENV === 'production' ? '.elb.amazonaws.com' : undefined  // Allow subdomain sharing in AWS
+  }
+};
+
+// Add MongoDB session store for production (LoadBalancer compatibility)
+if (process.env.NODE_ENV === 'production' && process.env.MONGO_URI && MongoStore) {
+  sessionConfig.store = MongoStore.create({
+    mongoUrl: process.env.MONGO_URI,
+    collectionName: 'sessions',
+    ttl: 24 * 60 * 60 // 24 hours in seconds
+  });
+  console.log('✅ Using MongoDB session store for LoadBalancer compatibility');
+} else if (process.env.NODE_ENV === 'production') {
+  console.warn('⚠️ Production mode but using memory store - sessions may not persist across LoadBalancer requests');
+}
+
+app.use(session(sessionConfig));
 
 // Database Connection
 mongoose.connect(process.env.MONGO_URI).then(() => {
@@ -86,6 +120,17 @@ app.post('/api/admin/logout', (req, res) => {
   });
 });
 
+// Session status check route (for debugging)
+app.get('/api/admin/session-status', (req, res) => {
+  res.json({
+    hasSession: !!req.session,
+    isAdmin: !!(req.session && req.session.isAdmin),
+    sessionID: req.sessionID || 'No session ID',
+    cookies: req.headers.cookie || 'No cookies',
+    nodeEnv: process.env.NODE_ENV
+  });
+});
+
 // Admin Authorization Middleware (Note: This is also defined in middleware/requireAdmin.js)
 function requireAdmin(req, res, next) {
   if (req.session && req.session.isAdmin) {
@@ -95,10 +140,7 @@ function requireAdmin(req, res, next) {
   }
 }
 
-app.use(cors({
-  origin: "http://ad38854d1c26d43879026ec8f54509e5-1765280511.ap-south-1.elb.amazonaws.com",  // e.g. http://localhost:3000 or your ELB domain
-  credentials: true                       // ✅ allow cookies
-}));
+// CORS already configured above - removing duplicate
 
 // Start Server
 const PORT = process.env.PORT || 5000;
