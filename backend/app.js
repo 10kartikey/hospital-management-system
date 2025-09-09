@@ -96,7 +96,7 @@ function requireAdmin(req, res, next) {
 }
 
 app.use(cors({
-  origin: "http://localhost:5000",  // e.g. http://localhost:3000 or your ELB domain
+  origin: "http://ad38854d1c26d43879026ec8f54509e5-1765280511.ap-south-1.elb.amazonaws.com",  // e.g. http://localhost:3000 or your ELB domain
   credentials: true                       // ✅ allow cookies
 }));
 
