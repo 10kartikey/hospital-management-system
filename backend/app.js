@@ -22,7 +22,11 @@ app.use(session({
   secret: process.env.SESSION_SECRET ,  // fallback secret
     resave: false,
     saveUninitialized: true,
-    cookie: { secure: false }  
+    cookie: {
+    httpOnly: true,
+    secure: false,   // true only if HTTPS
+    sameSite: "lax"  // or "none" if frontend & backend are on different domains with HTTPS
+  } 
 }));
 
 // Database Connection
@@ -90,6 +94,11 @@ function requireAdmin(req, res, next) {
     res.status(401).json({ message: 'Unauthorized' });
   }
 }
+
+app.use(cors({
+  origin: "http://localhost:5000",  // e.g. http://localhost:3000 or your ELB domain
+  credentials: true                       // ✅ allow cookies
+}));
 
 // Start Server
 const PORT = process.env.PORT || 5000;
