@@ -1,5 +1,10 @@
 pipeline {
     agent any
+    parameters {
+        string(name: 'IMAGE_TAG', defaultValue: 'latest', description: 'Docker Image Tag')
+        string(name: 'CONTAINER_NAME', defaultValue: 'hospital-app', description: 'Docker Container Name')
+        string(name: 'HOST_PORT', defaultValue: '5000', description: 'Host Port Number')
+    }
     environment {
         DOCKER_IMAGE = "10kartikey/hospital-management-system"
         DOCKER_TAG   = "${BUILD_NUMBER}"
